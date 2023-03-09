@@ -1,6 +1,7 @@
 import 'package:barcode_scanner_test/scan_page.dart';
 import 'package:barcode_scanner_test/smooth_qr_view_mlkit.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class MLKit45 extends StatefulWidget {
   const MLKit45(this.detectionTimeoutMs, {Key? key}) : super(key: key);
@@ -25,6 +26,18 @@ class _MLKit45State extends State<MLKit45> {
     return true;
   }
 
+  // just 1D formats and ios supported
+  static const List<BarcodeFormat> _barcodeFormats = <BarcodeFormat>[
+    BarcodeFormat.code39,
+    BarcodeFormat.code93,
+    BarcodeFormat.code128,
+    BarcodeFormat.ean8,
+    BarcodeFormat.ean13,
+    BarcodeFormat.itf,
+    BarcodeFormat.upcA,
+    BarcodeFormat.upcE,
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -35,7 +48,11 @@ class _MLKit45State extends State<MLKit45> {
         ),
         body: Stack(
           children: [
-            SmoothQRViewMLKit(_onScan, widget.detectionTimeoutMs),
+            SmoothQRViewMLKit(
+              _onScan,
+              _barcodeFormats,
+              widget.detectionTimeoutMs,
+            ),
             LayoutBuilder(
               builder: (context, constraints) => Padding(
                 padding: EdgeInsets.only(
@@ -50,11 +67,11 @@ class _MLKit45State extends State<MLKit45> {
                     color: Colors.green,
                     child: _previousBarcodes.isEmpty
                         ? Text(
-                            'Nothing scanned yet (with ${widget.detectionTimeoutMs}ms)')
+                            'Nothing scanned yet (with ${widget.detectionTimeoutMs}ms) ($_barcodeFormats)')
                         : ListView.builder(
                             itemCount: _previousBarcodes.length,
                             itemBuilder: (context, int i) => Text(
-                              '${_previousBarcodes.reversed.elementAt(i)}',
+                              _previousBarcodes.reversed.elementAt(i),
                             ),
                           ),
                   ),

@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Barcode Scanner Test v2')),
+      appBar: AppBar(title: Text('Barcode Scanner Test v3')),
       body: Center(
         child: Consumer<PermissionListener>(
           builder: (

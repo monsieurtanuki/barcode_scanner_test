@@ -10,9 +10,14 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 /// QR View.
 class SmoothQRViewMLKit extends StatefulWidget {
-  const SmoothQRViewMLKit(this.onScan, this.detectionTimeoutMs);
+  const SmoothQRViewMLKit(
+    this.onScan,
+    this.barcodeFormats,
+    this.detectionTimeoutMs,
+  );
 
   final int detectionTimeoutMs;
+  final List<BarcodeFormat> barcodeFormats;
   final Future<bool> Function(String) onScan;
 
   @override
@@ -21,18 +26,6 @@ class SmoothQRViewMLKit extends StatefulWidget {
 
 class _SmoothQRViewMLKitState extends State<SmoothQRViewMLKit>
     with SingleTickerProviderStateMixin {
-  // just 1D formats and ios supported
-  static const List<BarcodeFormat> _barcodeFormats = <BarcodeFormat>[
-    //BarcodeFormat.code39,
-    //BarcodeFormat.code93,
-    //BarcodeFormat.code128,
-    BarcodeFormat.ean8,
-    BarcodeFormat.ean13,
-    //BarcodeFormat.itf,
-    //BarcodeFormat.upcA,
-    //BarcodeFormat.upcE,
-  ];
-
   bool _visible = false;
   bool _isStarted = true;
 
@@ -43,7 +36,7 @@ class _SmoothQRViewMLKitState extends State<SmoothQRViewMLKit>
     super.initState();
     _controller = MobileScannerController(
       torchEnabled: false,
-      formats: _barcodeFormats,
+      formats: widget.barcodeFormats,
       facing: CameraFacing.back,
       detectionSpeed: DetectionSpeed.normal,
       detectionTimeoutMs: widget.detectionTimeoutMs,
@@ -114,11 +107,10 @@ class _SmoothQRViewMLKitState extends State<SmoothQRViewMLKit>
                 ) =>
                     ScannerErrorWidget(error: error),
                 onDetect: (final BarcodeCapture capture) async {
-                  print('onDetect');
                   for (final Barcode barcode in capture.barcodes) {
                     final String? string = barcode.displayValue;
                     if (string != null) {
-                      await widget.onScan(string);
+                      await widget.onScan('$string (${barcode.format})');
                     }
                   }
                 },

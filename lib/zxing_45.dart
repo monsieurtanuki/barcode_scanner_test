@@ -30,6 +30,18 @@ class _ZXING45State extends State<ZXING45> {
     return true;
   }
 
+  // just 1D formats and ios supported
+  static const List<BarcodeFormat> _barcodeFormats = <BarcodeFormat>[
+    BarcodeFormat.code39,
+    BarcodeFormat.code93,
+    BarcodeFormat.code128,
+    BarcodeFormat.ean8,
+    BarcodeFormat.ean13,
+    BarcodeFormat.itf,
+    BarcodeFormat.upcA,
+    BarcodeFormat.upcE,
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -40,7 +52,7 @@ class _ZXING45State extends State<ZXING45> {
         ),
         body: Stack(
           children: [
-            SmoothQRViewZXing(_onScan),
+            SmoothQRViewZXing(_onScan, _barcodeFormats),
             LayoutBuilder(
               builder: (context, constraints) => Padding(
                 padding: EdgeInsets.only(
@@ -54,11 +66,11 @@ class _ZXING45State extends State<ZXING45> {
                   child: Container(
                     color: Colors.green,
                     child: _previousBarcodes.isEmpty
-                        ? Text('Nothing scanned yet')
+                        ? Text('Nothing scanned yet ($_barcodeFormats)')
                         : ListView.builder(
                             itemCount: _previousBarcodes.length,
                             itemBuilder: (context, int i) => Text(
-                              '${_previousBarcodes.reversed.elementAt(i)}',
+                              _previousBarcodes.reversed.elementAt(i),
                             ),
                           ),
                   ),

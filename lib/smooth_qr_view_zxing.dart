@@ -16,27 +16,16 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 /// QR View.
 class SmoothQRViewZXing extends StatefulWidget {
-  const SmoothQRViewZXing(this.onScan);
+  const SmoothQRViewZXing(this.onScan, this.barcodeFormats);
 
   final Future<bool> Function(String) onScan;
+  final List<BarcodeFormat> barcodeFormats;
 
   @override
   State<StatefulWidget> createState() => _SmoothQRViewZXingState();
 }
 
 class _SmoothQRViewZXingState extends State<SmoothQRViewZXing> {
-  // just 1D formats and ios supported
-  static const List<BarcodeFormat> _barcodeFormats = <BarcodeFormat>[
-    //BarcodeFormat.code39,
-    //BarcodeFormat.code93,
-    //BarcodeFormat.code128,
-    BarcodeFormat.ean8,
-    BarcodeFormat.ean13,
-    //BarcodeFormat.itf,
-    //BarcodeFormat.upcA,
-    //BarcodeFormat.upcE,
-  ];
-
   bool _visible = false;
   final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? _controller;
@@ -75,7 +64,7 @@ class _SmoothQRViewZXingState extends State<SmoothQRViewZXing> {
                     cutOutBottomOffset:
                         0 //constraints.maxHeight -ScanPage.getCarouselHeight(constraints.maxHeight),
                     ),
-                formatsAllowed: _barcodeFormats,
+                formatsAllowed: widget.barcodeFormats,
                 onPermissionSet: (ctrl, p) =>
                     _onPermissionSet(context, ctrl, p),
               ),
@@ -133,10 +122,10 @@ class _SmoothQRViewZXingState extends State<SmoothQRViewZXing> {
   void _onQRViewCreated(final QRViewController controller) {
     setState(() => _controller = controller);
     controller.scannedDataStream.listen(
-      (final Barcode scanData) {
-        final String? barcode = scanData.code;
-        if (barcode != null) {
-          widget.onScan(barcode);
+      (final Barcode barcode) async {
+        final String? string = barcode.code;
+        if (string != null) {
+          await widget.onScan('$string (${barcode.format})');
         }
       },
     );
