@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Barcode Scanner Test v1')),
+      appBar: AppBar(title: Text('Barcode Scanner Test v2')),
       body: Center(
         child: Consumer<PermissionListener>(
           builder: (
@@ -68,10 +68,26 @@ class _MyHomePageState extends State<MyHomePage> {
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (BuildContext context) => MLKit45(),
+                          builder: (BuildContext context) => MLKit45(5000),
                         ),
                       ),
-                      child: Text('MLKit 45'),
+                      child: Text('MLKit (5000ms) (slow)'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (BuildContext context) => MLKit45(2000),
+                        ),
+                      ),
+                      child: Text('MLKit (2000ms)'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (BuildContext context) => MLKit45(250),
+                        ),
+                      ),
+                      child: Text('MLKit (250ms) (fast, default)'),
                     ),
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).push(

@@ -3,7 +3,9 @@ import 'package:barcode_scanner_test/smooth_qr_view_mlkit.dart';
 import 'package:flutter/material.dart';
 
 class MLKit45 extends StatefulWidget {
-  const MLKit45({Key? key}) : super(key: key);
+  const MLKit45(this.detectionTimeoutMs, {Key? key}) : super(key: key);
+
+  final int detectionTimeoutMs;
 
   @override
   State<MLKit45> createState() => _MLKit45State();
@@ -33,7 +35,7 @@ class _MLKit45State extends State<MLKit45> {
         ),
         body: Stack(
           children: [
-            SmoothQRViewMLKit(_onScan),
+            SmoothQRViewMLKit(_onScan, widget.detectionTimeoutMs),
             LayoutBuilder(
               builder: (context, constraints) => Padding(
                 padding: EdgeInsets.only(
@@ -47,7 +49,8 @@ class _MLKit45State extends State<MLKit45> {
                   child: Container(
                     color: Colors.green,
                     child: _previousBarcodes.isEmpty
-                        ? Text('Nothing scanned yet')
+                        ? Text(
+                            'Nothing scanned yet (with ${widget.detectionTimeoutMs}ms)')
                         : ListView.builder(
                             itemCount: _previousBarcodes.length,
                             itemBuilder: (context, int i) => Text(

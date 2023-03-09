@@ -10,8 +10,9 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 /// QR View.
 class SmoothQRViewMLKit extends StatefulWidget {
-  const SmoothQRViewMLKit(this.onScan);
+  const SmoothQRViewMLKit(this.onScan, this.detectionTimeoutMs);
 
+  final int detectionTimeoutMs;
   final Future<bool> Function(String) onScan;
 
   @override
@@ -35,15 +36,21 @@ class _SmoothQRViewMLKitState extends State<SmoothQRViewMLKit>
   bool _visible = false;
   bool _isStarted = true;
 
-  final MobileScannerController _controller = MobileScannerController(
-    torchEnabled: false,
-    formats: _barcodeFormats,
-    facing: CameraFacing.back,
-    detectionSpeed: DetectionSpeed.normal,
-    detectionTimeoutMs: 5000, // TODO 250ms by default
-    returnImage: false,
-    autoStart: true,
-  );
+  late final MobileScannerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = MobileScannerController(
+      torchEnabled: false,
+      formats: _barcodeFormats,
+      facing: CameraFacing.back,
+      detectionSpeed: DetectionSpeed.normal,
+      detectionTimeoutMs: widget.detectionTimeoutMs,
+      returnImage: false,
+      autoStart: true,
+    );
+  }
 
   Future<void> _start() async {
     if (_isStarted) {
